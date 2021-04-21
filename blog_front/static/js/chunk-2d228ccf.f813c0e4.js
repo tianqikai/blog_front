@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d228ccf"],{db72:function(n,t,e){"use strict";e.r(t);var c=function(){var n=this,t=n.$createElement,e=n._self._c||t;return e("div",{staticClass:"time-mains"},[n._v(" 我是时间轴 ")])},s=[],a=e("2877"),i={},l=Object(a["a"])(i,c,s,!1,null,null,null);t["default"]=l.exports}}]);

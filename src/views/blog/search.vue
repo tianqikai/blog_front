@@ -1,0 +1,129 @@
+<template>
+  <div>
+    <div class="button-container">
+      <div class="button-text">搜索</div>
+      <div class="button-menu">
+        <a-menu v-model="current" mode="horizontal" @click="changeSort">
+          <a-menu-item key="createdTime">
+            最新
+          </a-menu-item>
+          <a-menu-item key="blogGoods">
+            点赞最多
+          </a-menu-item>
+          <a-menu-item key="blogComment">
+            评论最多
+          </a-menu-item>
+          <a-menu-item key="blogRead">
+            阅读最多
+          </a-menu-item>
+          <a-menu-item key="blogCollection">
+            收藏最多
+          </a-menu-item>
+        </a-menu>
+      </div>
+    </div>
+
+    <!-- blog 列表 -->
+    <div>
+      <blog :blog-list="blogList" />
+    </div>
+
+    <div class="blog-pagination">
+      <a-pagination :show-total="total => `共 ${total} 条`" show-quick-jumper :default-current="1" :total="page.totalCount" @change="pageChange" />
+    </div>
+
+  </div>
+</template>
+
+<script>
+import blogApi from '@/api/blog'
+import Blog from '@/components/Blog'
+export default {
+  components: {
+    Blog
+  },
+  data() {
+    return {
+      current: ['createdTime'],
+      blogBodyStyle: {
+        padding: '18px'
+      },
+      page: {
+        currentPage: 1,
+        pageSize: 10,
+        totalCount: 0,
+        totalPage: 0,
+        params: {},
+        sortColumn: 'createdTime',
+        sortMethod: 'desc',
+        list: []
+      }
+    }
+  },
+  watch: {
+    '$route.params.blogTitle': function(newVal, oldVal) {
+      this.getByPage()
+    }
+  },
+  created() {
+    this.getByPage()
+  },
+  methods: {
+    pageChange(pageNumber) {
+      this.page.currentPage = pageNumber
+      this.getByPage()
+    },
+    getByPage() {
+      let title = this.$route.params.blogTitle
+      if (title) {
+        if (title === ' ') {
+          title = ''
+        }
+        this.page.params.blogTitle = title
+      }
+      blogApi.getByPage(this.page).then(res => {
+        this.page = res.data
+        this.blogList = this.page.list
+      })
+    },
+    changeSort(e) {
+      this.page.sortColumn = e.key
+      this.getByPage()
+    }
+  }
+}
+</script>
+
+<style scoped>
+.button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 5px;
+  align-items: center;
+  line-height: 70px;
+}
+
+.button-text {
+  font-size: 20px;
+}
+
+.ant-menu-horizontal {
+  border-bottom: none !important;
+}
+
+.ant-menu {
+  background: none !important;
+}
+
+a {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #3e4149;
+}
+
+a:hover {
+  color: #3e4149;
+}
+</style>
